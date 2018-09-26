@@ -174,7 +174,7 @@ server.delete('/delete/:todoToDelete', (req, res) => {
         res.status(200);
         return res.end();
     })
-
+    
 })
 
 
@@ -185,59 +185,51 @@ server.delete('/delete/:todoToDelete', (req, res) => {
 // curl -X PUT -H "Content-Type: application/json" -d '{"done":"true"}' "http://localhost:8080/todos/1"
 
 server.put('/todos/:id', (req, res) => {
-    let idTodoToEdit = parseInt(req.params.id);
-    let index = null;
-    
-    let todoToEdit = todos.find(element => {
-        return element.id === idTodoToEdit;
-    });
-    
-    //Avec un map :
-    let datas = req.body;
-    
-    /* attribution des nouvelles key_value editees */ 
-    let editedName = datas.name || todoToEdit.name;
-    let editedDate = datas.date || todoToEdit.date;
-    let editedDescription = datas.description || todoToEdit.description;
-    let editedDone = (datas.done || datas.done === false) ? datas.done : todoToEdit.done;
-    
-    /* creation du nouvel objet tache */
-    let editedItem = {
-        "id": todoToEdit.id,
-        "name":editedName,
-        "date":editedDate,
-        "ajout": todoToEdit.ajout,
-        "description":editedDescription,
-        "done": editedDone
-    }
-    
-    // Edition de la nouvelle tache
-    
-    todos = todos.map(item => {
-        return (item.id === idTodoToEdit) ? editedItem : item;
-    });
-    
-    // res.write(JSON.stringify("to edit : " + JSON.stringify(todoToEdit)) + '\n');
-    // res.write(JSON.stringify(" edited : " + JSON.stringify(editedItem)) + '\n');
-    
-    res.status(200);
-    res.end();
-})
-
-
-// Le serveur tourne suivant la configuration definie dans config.js
-
-mongo.connect('mongodb://127.0.0.1:27017')
-.then(() => {
-    console.log('Connected to mongodb, we can now use mongo.db object.')
-    server.listen(conf.port, conf.hostname, (err) => {
-        if(err){
-            return console.log("Error:", err)
+    let idTodoToEdit = mongo.ObjectID(req.params.id);
+    mongo.db.collection('todos').findOne({_id: idTodoToEdit})  
+    .then(result => {
+        if (!result) {
+            console.log("Warning, task to edit not found !");
+            res.status(403).end();
+            return result;
         }
-        console.log('Server running at http://' + conf.hostname + ':' + conf.port + '/'); 
-        console.log('today : ' + moment().format('DD-MM-YYYY hh:mm')) 
+        let datas = req.body;
+        /* attribution des nouvelles key_value editees */ 
+        let editedName = datas.name || result.name;
+        let editedDate = datas.date || result.date;
+        let editedDescription = datas.description || result.description;
+        let editedDone = (datas.done || datas.done === false) ? datas.done : result.done;
+        
+        mongo.db.collection('todos').updateOne(
+            {_id: idTodoToEdit},
+            {
+                $set: {"name": editedName, "date": editedDate, "description": editedDescription, "done": editedDone}
+            }
+        );
+            
+        res.status(200);
+        res.end();
+        })
+    .catch(err => {
+        console.log('An error occured inserting todo in mongo.', err)
+    })      
+})
+    
+    
+    // Le serveur tourne suivant la configuration definie dans config.js
+    
+    mongo.connect('mongodb://127.0.0.1:27017')
+    .then(() => {
+        console.log('Connected to mongodb, we can now use mongo.db object.')
+        server.listen(conf.port, conf.hostname, (err) => {
+            if(err){
+                return console.log("Error:", err)
+            }
+            console.log('Server running at http://' + conf.hostname + ':' + conf.port + '/'); 
+            console.log('today : ' + moment().format('DD-MM-YYYY hh:mm')) 
+        })
+        
     })
     
-})
-
-
+    
+    
