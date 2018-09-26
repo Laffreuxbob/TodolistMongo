@@ -8,6 +8,8 @@ npm install
 
 /Front => npm run start
 
+run mongo => mongo
+
 On your browser : http://127.0.0.1:8081
 
 Enjoy !
