@@ -3,8 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <title>TodoList</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    
+    <link rel="stylesheet" type="text/css" href="css/style.css"/></head>
+    
+    <script src="js/scriptTodo.js"></script>
 </head>
 <body>
+    <h1>To do list</h1>
+    
+    
+    <div id="search">
+        <input type="text">
+    </div>
+    
+    <button id="version" onclick="getVersion()">Version</button>
+    
+    
+    
+    <div id="formAd">
+        <label for="">Nom
+            <input type="text">
+        </label>
+        <label for="">Description
+            <input type="text">
+        </label>
+        <label for="">Date
+            <input type="date">
+        </label>
+        <label for="">Priorite
+            <select name="" id="">
+                <option value="">P0</option>
+                <option value="">P1</option>
+                <option value="">P2</option>
+            </select>
+        </label>
+    </div>
+    
+    <div id="mainContent">
+        
+        <div id="todoDisplay">
+            <ul>
+                <li class="list-group-item">test</li>
+                <li class="list-group-item">test</li>
+                <li class="list-group-item">test</li>
+                <li class="list-group-item">test</li>
+                <li class="list-group-item">test</li>
+            </ul>
+        </div>
+        
+        <div id="todoDisplayDone">
+            <ul>
+                <li class="list-group-item">test</li>
+                <li class="list-group-item">test</li>
+                <li class="list-group-item">test</li>
+                <li class="list-group-item">test</li>
+                <li class="list-group-item">test</li>
+            </ul>
+        </div>
+    </div>
+    
+    <div id="infos">
+        Infos
+    </div>
+    
     
     
 </body>

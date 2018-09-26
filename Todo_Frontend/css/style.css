@@ -1,0 +1,31 @@
+h1{
+    color: red;
+    text-align: center;
+}
+
+#mainContent{
+    display: flex;
+}
+/* 
+#mainContent > div {
+    max-height: 20vh;
+    overflow: scroll-y;
+} */
+
+#mainContent > div{
+    height: 5vh;
+    overflow-y: scroll;
+}
+
+#mainContent > div::-webkit-scrollbar { 
+    display: none; 
+}
+
+#todoDisplay{
+    flex : 50%;
+}
+
+#todoDisplayDone{
+    flex : 50%;
+}
+

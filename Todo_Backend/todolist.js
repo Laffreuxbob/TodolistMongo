@@ -38,8 +38,7 @@ server.get('/version', (req, res) => {
     }
     res.status(200);
     console.log('Version: ' + pkg.version);
-    res.send(pkg.version);
-    
+    res.send(pkg.version);  
 })
 
 // Methode GET pour recuperer la totalite de la liste de taches
@@ -75,7 +74,7 @@ server.get('/todos/:id', (req, res) => {
         res.send(todoToDisplay_ById); // pas besoin de end() avec send() et stringify transforme ton json en string
     })    
     .catch(err => console.log('An error occured searching todo with id', err));
-})
+});
 
 // Methode GET pour recuperer un element par recherche de mot cle
 // curl http://127.0.0.1:8080/todosSearch/Linux
@@ -94,6 +93,7 @@ server.get('/todosSearch/:name', (req, res) => {
     })    
     .catch(err => console.log('An error occured searching todo with name', err));
 });
+
 // Methode qui renvoie des informations temporelles liees a la tache (delais etc...) avec l'id
 // curl http://127.0.0.1:8080/todosInfos/1
 server.get('/todosInfos/:id', (req, res) => {
@@ -120,7 +120,7 @@ server.get('/todosInfos/:id', (req, res) => {
         res.end();
     }) 
     .catch(err => console.log('An error occured searching todo with id', err));
-})
+});
 
 // Methode POST pour ajouter un nouvel element a la liste en cours
 // curl -X POST -H "Content-Type: application/json" -d '{"name":"NouveauProjet", "date":"25-09-2019", "description":"Projet test delai"}' http://localhost:8080/todos/add
@@ -153,7 +153,7 @@ server.post('/todos/add',  (req, res) => {
     .catch(err => {
         console.log('An error occured inserting todo in mongo.', err)
     })
-})
+});
 
 
 // Methode DELETE pour supprimer un element de la liste avec une id
@@ -175,10 +175,7 @@ server.delete('/delete/:todoToDelete', (req, res) => {
         return res.end();
     })
     
-})
-
-
-
+});
 
 // Methode d'edition et de mise a jour d'une tache (on utilise le // pour garder la valeur actuelle)
 // curl -X PUT -H "Content-Type: application/json" -d '{"name":"editedName","date":"editedDate"}' "http://localhost:8080/todos/2"
@@ -205,15 +202,14 @@ server.put('/todos/:id', (req, res) => {
             {
                 $set: {"name": editedName, "date": editedDate, "description": editedDescription, "done": editedDone}
             }
-        );
-            
-        res.status(200);
-        res.end();
+            );     
+            res.status(200);
+            res.end();
         })
-    .catch(err => {
-        console.log('An error occured inserting todo in mongo.', err)
-    })      
-})
+        .catch(err => {
+            console.log('An error occured inserting todo in mongo.', err)
+        })      
+    });
     
     
     // Le serveur tourne suivant la configuration definie dans config.js
