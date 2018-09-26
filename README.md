@@ -1,3 +1,7 @@
+cd Todo_Backend/
+npm install
+
+cd Todo_Frontend/
 npm install
 
 /Back => npm run dev
