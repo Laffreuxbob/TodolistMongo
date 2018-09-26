@@ -62,42 +62,44 @@ server.get('/todos', (req, res) => {
 // Methode GET pour recuperer un element par recherche d'id
 // curl http://127.0.0.1:8080/todos/1
 server.get('/todos/:id', (req, res) => {
-    const todoToSearch = req.params.id; /* on recupere l'id' de recherche*/ 
-    let todoToDisplay = null; /* on prepare un objet vide pour recuperer une tache si elle existe */
-    
-    let todoToDisplayFind = todos.find(element => {
-        return(parseInt(element.id) === todoToSearch);
-    });
-   
-    res.status(200);
-    console.log('Resultat de la cherche avec l\'id : ' + todoToSearch)
-    console.log(todoToDisplayFind || 'Aucun resultat pour cette recherche');
-    console.log('------------------------')
-    res.send(todoToDisplayFind); // pas besoin de end() avec send() et stringify transforme ton json en string
+    const ID_todoToSearch = req.params.id; /* on recupere l'id' de recherche*/ 
+    mongo.db.collection('todos').find({}).toArray()
+    .then(todos => {
+        let todoToDisplayFind_ById = todos.find(element => {
+            return(String(element._id) === ID_todoToSearch);
+        });
+        res.status(200);
+        console.log('Resultat de la cherche avec l\'id : ' + ID_todoToSearch)
+        console.log(todoToDisplayFind_ById || 'Aucun resultat pour cette recherche');
+        console.log('------------------------')
+        res.send(todoToDisplayFind_ById); // pas besoin de end() avec send() et stringify transforme ton json en string
+    })    
+    .catch(err => console.log('An error occured searching todo with id', err));
 })
 
 // Methode GET pour recuperer un element par recherche de mot cle
 // curl http://127.0.0.1:8080/todosSearch/Linux
 server.get('/todosSearch/:name', (req, res) => {
-    const todoToSearch = req.params.name; /* on recupere les mot cle de recherche*/ 
-    let todoToDisplay = null; /* on prepare un objet vide pour recuperer une tache si elle existe */
-    todos.forEach( item => {
-        if(item.name.toLowerCase() === todoToSearch.toLowerCase()){
-            todoToDisplay = item;
-        }
-    }) // utiliser find()
-    res.status(200);
-    console.log('Resultat de la cherche avec le mot : ' + todoToSearch)
-    console.log(todoToDisplay || 'Aucun resultat pour cette recherche');
-    console.log('------------------------')
-    res.send(JSON.stringify(todoToDisplay)); // pas besoin de end() avec send()
+    const NAME_todoToSearch = req.params.name; /* on recupere l'id' de recherche*/ 
+    mongo.db.collection('todos').find({}).toArray()
+    .then(todos => {
+        let todoToDisplay_ByName = todos.find(element => {
+            return(element.name === NAME_todoToSearch);
+        });
+        res.status(200);
+        console.log('Resultat de la cherche avec le mot : ' + NAME_todoToSearch)
+        console.log(todoToDisplay_ByName || 'Aucun resultat pour cette recherche');
+        console.log('------------------------')
+        res.send(todoToDisplay_ByName); // pas besoin de end() avec send()
+    })    
+    .catch(err => console.log('An error occured searching todo with name', err));
 })
 
 // Methode POST pour ajouter un nouvel element a la liste en cours
 // curl -X POST -H "Content-Type: application/json" -d '{"name":"NouveauProjet", "date":"25-09-2019", "description":"Projet test delai"}' http://localhost:8080/todos/add
 server.post('/todos/add',  (req, res) => {
     const data = req.body    // recuperation des donnees dans le body de la requete
-
+    
     // attribution des nouvelles key_value  
     let newName = data.name || "default_name"; 
     let newDate = data.date || "11-09-2020";
@@ -111,7 +113,7 @@ server.post('/todos/add',  (req, res) => {
         "description":newDescription,
         "done": false
     }
-
+    
     mongo.db.collection('todos').findOne({name: newItem.name})
     .then(result => {
         if (result) {
@@ -119,7 +121,7 @@ server.post('/todos/add',  (req, res) => {
             res.status(403);
             return res.end();
         }
-
+        
         return mongo.db.collection('todos').insertOne(newItem)
     })
     .then(result => {
@@ -210,7 +212,7 @@ server.put('/todos/:id', (req, res) => {
     }
     
     // Edition de la nouvelle tache
-
+    
     todos = todos.map(item => {
         return (item.id === idTodoToEdit) ? editedItem : item;
     });
