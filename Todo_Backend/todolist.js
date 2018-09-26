@@ -5,6 +5,8 @@ const pkg = require('./package.json'); // Pour pouvoir lire les data Json
 const conf = require('./config.js'); // IP et port de notre serveur
 const moment = require('moment'); // Librairie gestion de dates
 
+const mongo = require('./lib/mongo')
+
 const bodyPost = require('body-parser'); // Necessaire a la lecture des data dans le body de la requete (post)
 
 const server = express();
@@ -26,46 +28,6 @@ const allowCrossDomain = function(req, res, next) {
 }
 server.use(allowCrossDomain);
 
-// Compteur qui simule les id des tasks
-let idTask = 5;
-
-// Liste fictive de tasks : bdd mongo pour plus tard
-let todos = [
-    {
-        id: 1,
-        name: "Linux",
-        date: "18-09-2018",
-        ajout: "12-09-2018",
-        description: "Installer Linux",
-        done: false
-    },
-    {
-        id: 2,
-        name: "Test",
-        date: "18-09-2018",
-        ajout: "13-09-2018", // pas de franglais ! add ou creation
-        description: "Realiser les tests de qualif",
-        done: false
-    },
-    {
-        id: 3,
-        name: "Todolist",
-        date: "18-09-2018",
-        ajout: "16-09-2018",
-        description: "Implementer une todolist en nodeJS",
-        done: false
-    },
-    {
-        id: 4,
-        name: "Alternance",
-        date: "11-09-2020",
-        ajout: "12-09-2018",
-        description: "Apprendre plein de trucs trop bien",
-        done: false
-    }
-]
-
-
 // Methode GET pour recuperer la version du projet
 // curl http://127.0.0.1:8080/version
 server.get('/version', (req, res) => {
@@ -83,17 +45,19 @@ server.get('/version', (req, res) => {
 // Methode GET pour recuperer la totalite de la liste de taches
 // curl http://127.0.0.1:8080/todos
 server.get('/todos', (req, res) => {
-    if (!todos) {
-        res.status(200);
-        console.log("Liste inexstante");
-        return res.send({} + '\n'); // res.send([]) surtout pas de + '\n'
-    }
-    res.status(200)
-    console.log('Liste de taches :')
-    console.log(todos || "Liste de taches vide");
-    console.log('------------------------')
-    res.send(todos)
-});
+    mongo.db.collection('todos').find({}).toArray()
+    .then(todos => {
+        if (!todos) {
+            res.status(200)
+            return res.send([]) // return empty array
+        }
+        res.status(200)
+        console.log("Sending", todos)
+        res.send(todos || {})
+    })
+    .catch(err => console.log('An error occured getting mongo todo list', err))
+})
+
 
 // Methode GET pour recuperer un element par recherche d'id
 // curl http://127.0.0.1:8080/todos/1
@@ -131,10 +95,9 @@ server.get('/todosSearch/:name', (req, res) => {
 
 // Methode POST pour ajouter un nouvel element a la liste en cours
 // curl -X POST -H "Content-Type: application/json" -d '{"name":"NouveauProjet", "date":"25-09-2019", "description":"Projet test delai"}' http://localhost:8080/todos/add
-server.post('/todos/add', (req, res) => {
-    
-    const data = req.body; // recuperation des donnees dans le body de la requete
-    
+server.post('/todos/add',  (req, res) => {
+    const data = req.body    // recuperation des donnees dans le body de la requete
+
     // attribution des nouvelles key_value  
     let newName = data.name || "default_name"; 
     let newDate = data.date || "11-09-2020";
@@ -142,26 +105,32 @@ server.post('/todos/add', (req, res) => {
     
     // creation du nouvel objet tache 
     let newItem = {
-        "id": idTask,
         "name":newName,
         "date":newDate,
         "ajout": moment().format('DD-MM-YYYY'),
         "description":newDescription,
         "done": false
     }
-    idTask++;
-    
-    // ajout a la liste 
-    todos.push(newItem);
-    
-    res.status(200);
-    
-    //res.write("Nouvelle entree enregistree : \n")
-    //res.write(JSON.stringify(newItem) + '\n')
-    console.log(newItem)
-    res.send(JSON.stringify(newItem))
-    res.end();
+
+    mongo.db.collection('todos').findOne({name: newItem.name})
+    .then(result => {
+        if (result) {
+            console.log("Attention, ", newItem.name, "exists!");
+            res.status(403);
+            return res.end();
+        }
+
+        return mongo.db.collection('todos').insertOne(newItem)
+    })
+    .then(result => {
+        console.log('Todo successfully added to mongo database.')
+        res.json(newItem)
+    })
+    .catch(err => {
+        console.log('An error occured inserting todo in mongo.')
+    })
 })
+
 
 // Methode DELETE pour supprimer un element de la liste avec une id
 // curl -X DELETE  http://127.0.0.1:8080/delete/2
@@ -254,87 +223,19 @@ server.put('/todos/:id', (req, res) => {
 })
 
 
-// server.put('/todos/edit/:id', (req, res) => {
-    
-//     let nameToEdit = parseInt(req.params.id);
-//     let todoToEdit = null;
-//     let index = null;
-    
-//     todos.forEach( item => {
-//         if(item.id === nameToEdit){
-//             todoToEdit = item;
-//             index = todos.indexOf(item);
-//         } 
-//     })
-    
-//     let datas = req.body;
-    
-//     /* attribution des nouvelles key_value editees */ 
-//     let editedName = (datas.name === "//" || "" ?  todoToEdit.name : datas.name);
-//     let editedDate = (datas.date === "//" || "" ?  todoToEdit.date : datas.date);
-//     let editedDescription = (datas.description === "//" || "" || !datas.description ? todoToEdit.description : datas.description);
-    
-//     /* creation du nouvel objet tache */
-//     let editedItem = {
-//         "id": todoToEdit.id,
-//         "name":editedName,
-//         "date":editedDate,
-//         "ajout": todoToEdit.ajout,
-//         "description":editedDescription,
-//         "done": todoToEdit.done
-//     }
-    
-//     // Edition de la nouvelle tache
-//     todos[index] = editedItem;
-    
-//     // res.write(JSON.stringify("to edit : " + JSON.stringify(todoToEdit)) + '\n');
-//     // res.write(JSON.stringify(" edited : " + JSON.stringify(editedItem)) + '\n');
-    
-//     res.status(200);
-//     res.end();
-// })
-
-// server.put('/todos/editDone/:id', (req, res) => {
-    
-//     console.log("done")
-//     let idToEdit = parseInt(req.params.id);
-//     let todoToEdit = null;
-//     let index = null;
-    
-//     todos.forEach( item => {
-//         if(item.id === idToEdit){
-//             todoToEdit = item;
-//             index = todos.indexOf(item);
-//         } 
-//     })
-    
-//     let datas = req.body;
-    
-//     /* creation du nouvel objet tache */
-//     let editedItem = {
-//         "id": todoToEdit.id,
-//         "name":todoToEdit.name,
-//         "date":todoToEdit.date,
-//         "ajout": todoToEdit.ajout,
-//         "description":todoToEdit.description,
-//         "done": !todoToEdit.done
-//     }
-    
-//     // Edition de la nouvelle tache
-//     todos[index] = editedItem;
-    
-//     // res.write(JSON.stringify("to edit : " + JSON.stringify(todoToEdit)) + '\n');
-//     // res.write(JSON.stringify(" edited : " + JSON.stringify(editedItem)) + '\n');
-    
-//     res.status(200);
-//     res.end();
-// })
-
 // Le serveur tourne suivant la configuration definie dans config.js
-server.listen(conf.port, conf.hostname, (err) => {
-    if(err){
-        return console.log("Error:", err)
-    }
-    console.log('Server running at http://' + conf.hostname + ':' + conf.port + '/'); 
-    console.log('today : ' + moment().format('DD-MM-YYYY hh:mm')) 
+
+mongo.connect('mongodb://127.0.0.1:27017')
+.then(() => {
+    console.log('Connected to mongodb, we can now use mongo.db object.')
+    server.listen(conf.port, conf.hostname, (err) => {
+        if(err){
+            return console.log("Error:", err)
+        }
+        console.log('Server running at http://' + conf.hostname + ':' + conf.port + '/'); 
+        console.log('today : ' + moment().format('DD-MM-YYYY hh:mm')) 
+    })
+    
 })
+
+
