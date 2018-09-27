@@ -149,7 +149,7 @@ server.post('/todos/add',  (req, res) => {
         mongo.db.collection('todos').insertOne(newItem);
         console.log('Todo successfully added to mongo database.');
         res.status(200);
-        return res.send(newItem);
+        return res.send(JSON.stringify(newItem));
     })
     .catch(err => {
         console.log('An error occured inserting todo in mongo.', err)

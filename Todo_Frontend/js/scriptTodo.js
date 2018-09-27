@@ -25,21 +25,22 @@ function getTodos(){
     console.log("DISPLAYYYYYYYYYYY")
     console.log(obj)
     for(key in obj){
-      console.log(obj[key])
+      //console.log(obj[key])
       let task = new Task(obj[key].name,obj[key].date, obj[key].description,  obj[key].priority);
       task.createFront();      
     }
   }
 
   function add(){
-    let newName = document.getElementById("addName").value;
-    let newDate = document.getElementById("addDate").value;
-    let newDescription = document.getElementById("addDescription").value;
-    let newPriority = document.getElementById("addPriority").value;
+    let newName = document.getElementById("addName");
+    let newDate = document.getElementById("addDate");
+    let newDescription = document.getElementById("addDescription");
+    let newPriority = document.getElementById("addPriority");
 
-    let task = new Task(newName, newDate, newDescription, newPriority);
-    console.log(task)
+    let task = new Task(newName.value, newDate.value, newDescription.value, newPriority.value);
+    //console.log(task)
     task.create();
+
   }
 
 
