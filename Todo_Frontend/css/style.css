@@ -7,12 +7,12 @@ h1{
     display: flex;
 }
 
-#mainContent > div{
+#mainContent  ul{
     height: 50vh;
     overflow-y: scroll;
 }
 
-#mainContent > div::-webkit-scrollbar { 
+#mainContent  ul::-webkit-scrollbar { 
     display: none; 
 }
 
