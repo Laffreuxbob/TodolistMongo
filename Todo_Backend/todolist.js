@@ -38,7 +38,8 @@ server.get('/version', (req, res) => {
     }
     res.status(200);
     console.log('Version: ' + pkg.version);
-    res.send(pkg.version);  
+    console.log('Version type : ' ,typeof pkg.version)
+    res.send(JSON.stringify(pkg.version));  
 })
 
 // Methode GET pour recuperer la totalite de la liste de taches
@@ -214,7 +215,7 @@ server.put('/todos/:id', (req, res) => {
     
     // Le serveur tourne suivant la configuration definie dans config.js
     
-    mongo.connect('mongodb://127.0.0.1:27017')
+    mongo.connect('mongodb://127.0.0.1:27017/todos', { useNewUrlParser: true })
     .then(() => {
         console.log('Connected to mongodb, we can now use mongo.db object.')
         server.listen(conf.port, conf.hostname, (err) => {

@@ -6,9 +6,11 @@ npm install
 
 /Back => npm run dev
 
-/Front => npm run start
+/Front => npm start
 
-run mongo => mongo
+install mongoDB & mongod
+sudo service mongod start 
+
 
 On your browser : http://127.0.0.1:8081
 

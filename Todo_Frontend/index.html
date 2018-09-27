@@ -8,57 +8,53 @@
     <link rel="stylesheet" type="text/css" href="css/style.css"/></head>
     
     <script src="js/scriptTodo.js"></script>
+    <script src="js/Task.js"></script>
+
 </head>
 <body>
     <h1>To do list</h1>
     
     
     <div id="search">
-        <input type="text">
+        <input type="text" id="inputSearchTask">
     </div>
     
-    <button id="version" onclick="getVersion()">Version</button>
+    <button id="versionButton" onclick="getVersion()">Version</button>
     
     
     
     <div id="formAd">
         <label for="">Nom
-            <input type="text">
+            <input type="text" id="addName">
         </label>
         <label for="">Description
-            <input type="text">
+            <input type="text" id="addDescription">
         </label>
         <label for="">Date
-            <input type="date">
+            <input type="date" id="addDate">
         </label>
         <label for="">Priorite
-            <select name="" id="">
+            <select name="" id="addPriority">
                 <option value="">P0</option>
                 <option value="">P1</option>
                 <option value="">P2</option>
             </select>
         </label>
+
+        <button type="submit" id="addButton">Ajouter</button>
     </div>
     
     <div id="mainContent">
         
         <div id="todoDisplay">
-            <ul>
-                <li class="list-group-item">test</li>
-                <li class="list-group-item">test</li>
-                <li class="list-group-item">test</li>
-                <li class="list-group-item">test</li>
-                <li class="list-group-item">test</li>
+            <ul id="todoDisplayList">
+                
             </ul>
         </div>
         
         <div id="todoDisplayDone">
-            <ul>
-                <li class="list-group-item">test</li>
-                <li class="list-group-item">test</li>
-                <li class="list-group-item">test</li>
-                <li class="list-group-item">test</li>
-                <li class="list-group-item">test</li>
+            <ul id="todoDisplayDonelist">
+               
             </ul>
         </div>
     </div>

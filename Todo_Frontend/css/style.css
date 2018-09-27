@@ -6,14 +6,9 @@ h1{
 #mainContent{
     display: flex;
 }
-/* 
-#mainContent > div {
-    max-height: 20vh;
-    overflow: scroll-y;
-} */
 
 #mainContent > div{
-    height: 5vh;
+    height: 50vh;
     overflow-y: scroll;
 }
 
