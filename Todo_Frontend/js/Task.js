@@ -17,16 +17,22 @@ class Task {
     }
     
     delete(){
-        console.log("delete");
-        this.deleteFront();
+        //console.log("delete");
+        let idToDelete = this.parentNode.id;
+        Task.deleteBack(idToDelete)
+        .then(Task.deleteFront(idToDelete))
+        .catch(err => console.log("erreur : ", err)) // POPUP
     }
     
-    deleteBack(){
-        console.log("deleteBack")
+    static deleteBack(idToDelete){
+        console.log("deleteBack");
+        return fetch('http://127.0.0.1:8080/delete/' + idToDelete, {
+        method:'delete'})
+        .catch(err => console.log("erreur : ", err)) // POPUP
     }
     
-    deleteFront(){
-        console.log("deleteFront")
+    static deleteFront(idToDelete){
+        document.getElementById(idToDelete).remove();
     }
     
     create() {
@@ -68,11 +74,10 @@ class Task {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
         },
-        body:JSON.stringify({"name": this.name, "date": this.date, "description": this.description, "priority": this.priority})
-    })
-    .then(response => {return (response.status === 200) ? response.json() : Promise.reject("Nom deja existant");})
-    .catch(err => console.log("erreur : ", err)) // POPUP
-}
-
-
+        body:JSON.stringify({"name": this.name, "date": this.date, "description": this.description, "priority": this.priority})})
+        .then(response => {return (response.status === 200) ? response.json() : Promise.reject("Nom deja existant");})
+        .catch(err => console.log("erreur : ", err)) // POPUP
+    }
+    
+    
 }
