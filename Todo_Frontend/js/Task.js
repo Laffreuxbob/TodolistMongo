@@ -5,7 +5,9 @@ class Task {
         this.date = (date || "11-09-2020");
         this.description = (description || "default_description");
         this.priority = (priority || "P1");
+        
         this.id = null;
+        this.done = false;
     }
     
     test(){
@@ -25,7 +27,7 @@ class Task {
     }
     
     static deleteBack(idToDelete){
-        console.log("deleteBack");
+        //console.log("deleteBack");
         return fetch('http://127.0.0.1:8080/delete/' + idToDelete, {
         method:'delete'})
         .catch(err => console.log("erreur : ", err)) // POPUP
@@ -48,10 +50,11 @@ class Task {
     
     createFront(idMongo){
         //console.log("create front");
-        console.log(idMongo)
+        //console.log(idMongo)
         let taskFront = document.createElement('li');
         taskFront.className = "list-group-item";
         taskFront.innerHTML = this.name;
+        taskFront.innerHTML += this.done;
         taskFront.id = idMongo;
         
         
@@ -61,9 +64,52 @@ class Task {
         
         taskFront.appendChild(deleteButton);
         
-        //let parent = (this.done) ? document.getElementById("todoDisplayListDone") : document.getElementById("todoDisplayList");
-        let parent = document.getElementById("todoDisplayList");
+        let doneButton = document.createElement('button');
+        doneButton.innerHTML = "done";
+        doneButton.addEventListener("click", this.doneTask)
+        
+        taskFront.appendChild(doneButton);
+        
+
+        
+        let parent = (this.done) ? document.getElementById("todoDisplayListDone") : document.getElementById("todoDisplayList");
+        //console.log(parent)
+        //let parent = document.getElementById("todoDisplayList");
         parent.prepend(taskFront);
+    }
+    doneTask(){
+        let idTaskToDone = this.parentNode.id;
+        Task.doneTaskBack(idTaskToDone)
+        .then(
+            Task.doneTaskFront(idTaskToDone)
+        )
+        .catch(err => console.log("erreur", err))
+    }
+    
+    static doneTaskBack(idTaskToDone){
+        console.log("doneTaskBack")
+        this.done = true;
+        return fetch('http://127.0.0.1:8080/todos/' + idTaskToDone, {
+        method:'put',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body:JSON.stringify({"done": true})})
+    }
+    
+    static doneTaskFront(idTaskToDone){
+
+        document.getElementById(idTaskToDone).remove();
+
+        fetch('http://127.0.0.1:8080/todos/' + idTaskToDone)
+        .then(response => response.json())
+        .then(data => {
+            let doneTask = new Task(data.name,data.date, data.description, data.priority);
+            doneTask.createFront(data.id)
+        })
+        .catch(err => console.log("rr", err))
+        
     }
     
     createBack() {
@@ -78,6 +124,4 @@ class Task {
         .then(response => {return (response.status === 200) ? response.json() : Promise.reject("Nom deja existant");})
         .catch(err => console.log("erreur : ", err)) // POPUP
     }
-    
-    
 }

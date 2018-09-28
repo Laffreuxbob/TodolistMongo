@@ -22,9 +22,11 @@ function getTodos(){
   }
 
   function displayTasks(obj){
-    console.log("DISPLAYYYYYYYYYYY")
-    console.log(obj)
+    //console.log("DISPLAYYYYYYYYYYY")
+    console.dir(JSON.parse(JSON.stringify(obj)));
+
     for(key in obj){
+      //console.log(obj[key].done)
       let task = new Task(obj[key].name,obj[key].date, obj[key].description,  obj[key].priority);
       task.createFront(obj[key]._id);      
     }
@@ -39,7 +41,6 @@ function getTodos(){
     let task = new Task(newName.value, newDate.value, newDescription.value, newPriority.value);
     //console.log(task)
     task.create();
-
   }
 
 
