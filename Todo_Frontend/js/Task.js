@@ -7,15 +7,22 @@ class Task {
         this.date = (date || "11-09-2020");
         this.description = (description || "default_description");
         this.priority = (priority || "P1");
+        this.id = null;
+    }
+
+    setID(idMongo){
+        this.id = idMongo;
     }
     
     create() {
         this.createBack()
         .then(data => {
+            //console.log("idMongo : ", data._id)
             if(data !== undefined){
+                this.setID(data._id);
                 this.createFront()
             }
-        }).catch(err => console.log(err))
+        }).catch(err => console.log(err, "test"))
     }
     
     createFront(){
@@ -23,6 +30,7 @@ class Task {
         let taskFront = document.createElement('li');
         taskFront.className = "list-group-item";
         taskFront.innerHTML = this.name;
+        taskFront.id = this.id;
         //test if(this.done) ? parent : parentDone
         let parent = document.getElementById("todoDisplayList");
         parent.prepend(taskFront);
@@ -38,11 +46,8 @@ class Task {
         },
         body:JSON.stringify({"name": this.name, "date": this.date, "description": this.description, "priority": this.priority})
     })
-    .then(response => { 
-        //return response.json();
-        return (response.status === 200) ? response.json() : Promise.reject("Nom deja existant");
-    })
-    .catch(err => console.log("erreur : ", err))
+    .then(response => {return (response.status === 200) ? response.json() : Promise.reject("Nom deja existant");})
+    .catch(err => console.log("erreur : ", err)) // POPUP
 }
 
 
