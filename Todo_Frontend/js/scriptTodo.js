@@ -25,9 +25,8 @@ function getTodos(){
     console.log("DISPLAYYYYYYYYYYY")
     console.log(obj)
     for(key in obj){
-      //console.log(obj[key])
       let task = new Task(obj[key].name,obj[key].date, obj[key].description,  obj[key].priority);
-      task.createFront();      
+      task.createFront(obj[key]._id);      
     }
   }
 

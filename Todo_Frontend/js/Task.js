@@ -1,5 +1,3 @@
-console.log("taskclass");
-
 class Task {
     constructor(name, date, description, priority) {
         
@@ -9,29 +7,55 @@ class Task {
         this.priority = (priority || "P1");
         this.id = null;
     }
-
+    
+    test(){
+        console.log("test")
+    }
+    
     setID(idMongo){
         this.id = idMongo;
     }
     
+    delete(){
+        console.log("delete");
+        this.deleteFront();
+    }
+    
+    deleteBack(){
+        console.log("deleteBack")
+    }
+    
+    deleteFront(){
+        console.log("deleteFront")
+    }
+    
     create() {
+        //console.log("create")
         this.createBack()
         .then(data => {
-            //console.log("idMongo : ", data._id)
             if(data !== undefined){
                 this.setID(data._id);
-                this.createFront()
+                this.createFront(data._id)
             }
         }).catch(err => console.log(err, "test"))
     }
     
-    createFront(){
+    createFront(idMongo){
         //console.log("create front");
+        console.log(idMongo)
         let taskFront = document.createElement('li');
         taskFront.className = "list-group-item";
         taskFront.innerHTML = this.name;
-        taskFront.id = this.id;
-        //test if(this.done) ? parent : parentDone
+        taskFront.id = idMongo;
+        
+        
+        let deleteButton = document.createElement('button');
+        deleteButton.innerHTML = "delete";
+        deleteButton.addEventListener("click", this.delete)
+        
+        taskFront.appendChild(deleteButton);
+        
+        //let parent = (this.done) ? document.getElementById("todoDisplayListDone") : document.getElementById("todoDisplayList");
         let parent = document.getElementById("todoDisplayList");
         parent.prepend(taskFront);
     }
@@ -49,8 +73,6 @@ class Task {
     .then(response => {return (response.status === 200) ? response.json() : Promise.reject("Nom deja existant");})
     .catch(err => console.log("erreur : ", err)) // POPUP
 }
-
-
 
 
 }
