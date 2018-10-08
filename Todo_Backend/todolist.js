@@ -131,12 +131,15 @@ server.post('/todos/add',  (req, res) => {
     let newName = data.name || "default_name"; 
     let newDate = data.date || "11-09-2020";
     let newDescription = data.description || "default_description";
+    let newPriority = data.priority || "default_priority";
+
     // creation du nouvel objet tache 
     let newItem = {
         "name":newName,
         "date":newDate,
         "ajout": moment().format('DD-MM-YYYY'),
         "description":newDescription,
+        "priority": newPriority,
         "done": false
     };
     mongo.db.collection('todos').findOne({name: newItem.name})

@@ -4,12 +4,14 @@ h1{
 }
 
 #mainContent{
+    flex: 60%;
     display: flex;
 }
 
 #mainContent  ul{
     height: 50vh;
     overflow-y: scroll;
+    padding: 0;
 }
 
 #mainContent  ul::-webkit-scrollbar { 
@@ -22,5 +24,27 @@ h1{
 
 #todoDisplayDone{
     flex : 50%;
+}
+
+#allContent{
+    display: flex;
+}
+
+#formAdd{
+    flex : 1%;
+    margin-left: 2%;
+}
+
+#infos{
+    flex : 10%
+}
+
+#todoDisplayDonelist > li > .doneButton{
+    display: none;
+    border: 10px solid black;
+}
+
+#formAdd, #todoDisplay, #todoDisplayDone{
+    border: 1px solid grey;
 }
 

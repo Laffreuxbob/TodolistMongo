@@ -4,7 +4,7 @@ class Task {
         this.name = (name || "default_name");
         this.date = (date || "11-09-2020");
         this.description = (description || "default_description");
-        this.priority = (priority || "P1");
+        this.priority = (priority || 1);
         
         this.id = null;
         this.done = false;
@@ -43,12 +43,14 @@ class Task {
         .then(data => {
             if(data !== undefined){
                 this.setID(data._id);
+                this.done = data.done
                 this.createFront(data._id)
             }
         }).catch(err => console.log(err, "test"))
     }
     
     createFront(idMongo){
+        console.log(this)
         //console.log("create front");
         //console.log(idMongo)
         let taskFront = document.createElement('li');
@@ -57,28 +59,31 @@ class Task {
         taskFront.innerHTML += this.done;
         taskFront.id = idMongo;
         
-        
         let deleteButton = document.createElement('button');
         deleteButton.innerHTML = "delete";
+        deleteButton.className = "btn btn-danger"
         deleteButton.addEventListener("click", this.delete)
         
         taskFront.appendChild(deleteButton);
         
         let doneButton = document.createElement('button');
         doneButton.innerHTML = "done";
+        doneButton.className = "btn btn-success doneButton"
         doneButton.addEventListener("click", this.doneTask)
         
         taskFront.appendChild(doneButton);
-        
-
-        
-        let parent = (this.done) ? document.getElementById("todoDisplayListDone") : document.getElementById("todoDisplayList");
-        //console.log(parent)
+        //console.log("THIS   : ",this)
+       
+        console.log("done : ", this.done)
+        let parent = (this.done) ? document.getElementById("todoDisplayDonelist") : document.getElementById("todoDisplayList");
         //let parent = document.getElementById("todoDisplayList");
+        console.log("PARENT : ",parent)
         parent.prepend(taskFront);
     }
+
     doneTask(){
         let idTaskToDone = this.parentNode.id;
+        this.done = true;
         Task.doneTaskBack(idTaskToDone)
         .then(
             Task.doneTaskFront(idTaskToDone)
@@ -87,7 +92,6 @@ class Task {
     }
     
     static doneTaskBack(idTaskToDone){
-        console.log("doneTaskBack")
         this.done = true;
         return fetch('http://127.0.0.1:8080/todos/' + idTaskToDone, {
         method:'put',
@@ -101,12 +105,17 @@ class Task {
     static doneTaskFront(idTaskToDone){
 
         document.getElementById(idTaskToDone).remove();
+        //console.log("doneTaskFront : ", this)
 
         fetch('http://127.0.0.1:8080/todos/' + idTaskToDone)
         .then(response => response.json())
+        .then(data => {console.log("DATAAAAAAAA : ", data); return data})
         .then(data => {
             let doneTask = new Task(data.name,data.date, data.description, data.priority);
-            doneTask.createFront(data.id)
+            doneTask.setID(idTaskToDone);
+            doneTask.done = data.done;
+            console.log("doneTASKKKKKKKK : ", doneTask)
+            doneTask.createFront(idTaskToDone)
         })
         .catch(err => console.log("rr", err))
         

@@ -9,7 +9,7 @@
     
     <script src="js/scriptTodo.js"></script>
     <script src="js/Task.js"></script>
-
+    
 </head>
 <body>
     <h1>To do list</h1>
@@ -22,48 +22,59 @@
     
     <button id="versionButton" onclick="getVersion()">Version</button>
     
-    
-    
-    <div id="formAdd">
-        <label for="">Nom
-            <input type="text" id="addName">
-        </label>
-        <label for="">Description
-            <input type="text" id="addDescription">
-        </label>
-        <label for="">Date
-            <input type="date" id="addDate">
-        </label>
-        <label for="">Priorite
-            <select name="" id="addPriority">
-                <option value="">P0</option>
-                <option value="">P1</option>
-                <option value="">P2</option>
-            </select>
-        </label>
-
-        <button type="submit" id="addButton">Ajouter</button>
-    </div>
-    
-    <div id="mainContent">
-        
-        <div id="todoDisplay">
-            <h4>A faire</h4>
-            <ul id="todoDisplayList">
-                
-            </ul>
+    <div id="allContent">
+        <div id="formAdd">
+            <div class="form-group">
+                <label for="">Nom
+                    <input type="text" id="addName" class="form-control">
+                </label>
+            </div>
+            <div class="form-group">
+                <label for="">Description
+                    <input type="text" id="addDescription" class="form-control">
+                </label>
+            </div>
+            <div class="form-group">
+                <label for="">Date
+                    <input type="date" id="addDate" class="form-control">
+                </label>
+            </div>
+            <div class="form-group">
+                <label for="">Priorite
+                    <select name="" id="addPriority" class="form-control">
+                        <option value=0>P0</option>
+                        <option value=1>P1</option>
+                        <option value=2>P2</option>
+                    </select>
+                </label>
+            </div>
+            <button type="submit" id="addButton">Ajouter</button>
+            <button id="cancelAddButton">Annuler</button>
         </div>
         
-        <div id="todoDisplayDone">
-            <h4>Fait</h4>
-            <ul id="todoDisplayDonelist">
-               
-            </ul>
+        <div id="mainContent">
+            
+            <div id="todoDisplay">
+                <h4>A faire</h4>
+                <ul id="todoDisplayList">
+                    
+                </ul>
+            </div>
+            
+            <div id="todoDisplayDone">
+                <h4>Fait</h4>
+                <ul id="todoDisplayDonelist">
+                    
+                </ul>
+            </div>
         </div>
-    </div>
-    
-    <div id="infos">
-        Infos
+        
+        <div id="infos">
+            Infos
+        </div>
+        
+        
+        
     </div>
     
     
