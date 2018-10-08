@@ -49,13 +49,26 @@ class Task {
         }).catch(err => console.log(err, "test"))
     }
     
+    createBack() {
+        //console.log("create back");
+        return fetch('http://127.0.0.1:8080/todos/add', {
+        method:'post',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body:JSON.stringify({"name": this.name, "date": this.date, "description": this.description, "priority": this.priority, "done": false})})
+        .then(response => {return (response.status === 200) ? response.json() : Promise.reject("Nom deja existant");})
+        .catch(err => console.log("erreur : ", err)) // POPUP
+    }
+
     createFront(idMongo){
         //console.log("create front");
         //console.log(idMongo)
         let taskFront = document.createElement('li');
         taskFront.className = "list-group-item";
         taskFront.innerHTML = this.name;
-        taskFront.innerHTML += this.done;
+        //taskFront.innerHTML += " _ " + this.id;
         taskFront.id = idMongo;
         
         let deleteButton = document.createElement('button');
@@ -71,27 +84,30 @@ class Task {
         doneButton.addEventListener("click", this.doneTask)
         
         taskFront.appendChild(doneButton);
-        //console.log("THIS   : ",this)
-       
+        
+        let infoButton = document.createElement('button');
+        infoButton.innerHTML = "info";
+        infoButton.className = "btn btn-primary"
+        infoButton.addEventListener("click", this.getInfoDisplay)
+        
+        taskFront.appendChild(infoButton)
+        
+        
         let parent = (this.done) ? document.getElementById("todoDisplayDonelist") : document.getElementById("todoDisplayList");
         //let parent = document.getElementById("todoDisplayList");
         parent.prepend(taskFront);
     }
-
+    
     doneTask(){
-        console.log("done");
         let idTaskToDone = this.parentNode.id;
-        this.done = true;
         Task.doneTaskBack(idTaskToDone)
         .then(
             Task.doneTaskFront(idTaskToDone)
-        )
-        .catch(err => console.log("erreur", err))
+            )
+            .catch(err => console.log("erreur", err))
     }
-    
+        
     static doneTaskBack(idTaskToDone){
-        this.done = true;
-        console.log("done back")
         return fetch('http://127.0.0.1:8080/todos/' + idTaskToDone, {
         method:'put',
         headers: {
@@ -102,35 +118,27 @@ class Task {
     }
     
     static doneTaskFront(idTaskToDone){
-
-        console.log("done front")
         
-        //console.log("doneTaskFront : ", this)
-
+        document.getElementById(idTaskToDone)
+        
         fetch('http://127.0.0.1:8080/todos/' + idTaskToDone)
         .then(response => response.json())
-        //.then(data => {console.log("DATAAAAAAAA : ", data); return data})
         .then(data => {
-            let doneTask = new Task(data.name,data.date, data.description, data.priority);
+            let doneTask = new Task(data.name,data.date, data.description, data.priority, data.done);
             doneTask.setID(idTaskToDone);
-            doneTask.done = data.done;
-            document.getElementById(idTaskToDone).remove()
-            doneTask.createFront(idTaskToDone)
+            doneTask.createFront(idTaskToDone);
         })
-        .catch(err => console.log("rr", err))
-        
+        .catch(err => console.log("rr", err)) 
     }
     
-    createBack() {
-        //console.log("create back");
-        return fetch('http://127.0.0.1:8080/todos/add', {
-        method:'post',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        },
-        body:JSON.stringify({"name": this.name, "date": this.date, "description": this.description, "priority": this.priority})})
-        .then(response => {return (response.status === 200) ? response.json() : Promise.reject("Nom deja existant");})
-        .catch(err => console.log("erreur : ", err)) // POPUP
+    getInfoDisplay(){
+        let infos = document.getElementById("infos")
+        
+        fetch('http://127.0.0.1:8080/todos/' + this.id)
+        .then(response => response.json())
+        .then(data => {
+            infos.innerHTML = JSON.stringify(data)
+        })
+        .catch(err => console.log("rr", err))
     }
 }
