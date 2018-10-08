@@ -1,6 +1,8 @@
 /Todo_Backend/node_modules
 /Todo_Frontend/node_modules
 node_modules
+
+# trash from windows
 .vs/
 Todo_Backend/npm-debug.log
 Todo_Frontend/index.html~RF37a9f0.TMP

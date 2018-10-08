@@ -31,8 +31,7 @@ function getTodos(){
 
 
     for(key in obj){
-      console.log(obj[key].done)
-      let task = new Task(obj[key].name,obj[key].date, obj[key].description,  obj[key].priority);
+      let task = new Task(obj[key].name,obj[key].date, obj[key].description,  obj[key].priority, obj[key].done);
       task.createFront(obj[key]._id);      
     }
   }

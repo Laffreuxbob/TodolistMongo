@@ -1,5 +1,5 @@
 class Task {
-    constructor(name, date, description, priority) {
+    constructor(name, date, description, priority, done) {
         
         this.name = (name || "default_name");
         this.date = (date || "11-09-2020");
@@ -7,7 +7,7 @@ class Task {
         this.priority = (priority || 1);
         
         this.id = null;
-        this.done = false;
+        this.done = done || false;
     }
     
     test(){
@@ -43,14 +43,13 @@ class Task {
         .then(data => {
             if(data !== undefined){
                 this.setID(data._id);
-                this.done = data.done
+                this.done = data.done;
                 this.createFront(data._id)
             }
         }).catch(err => console.log(err, "test"))
     }
     
     createFront(idMongo){
-        console.log(this)
         //console.log("create front");
         //console.log(idMongo)
         let taskFront = document.createElement('li');
@@ -74,14 +73,13 @@ class Task {
         taskFront.appendChild(doneButton);
         //console.log("THIS   : ",this)
        
-        console.log("done : ", this.done)
         let parent = (this.done) ? document.getElementById("todoDisplayDonelist") : document.getElementById("todoDisplayList");
         //let parent = document.getElementById("todoDisplayList");
-        console.log("PARENT : ",parent)
         parent.prepend(taskFront);
     }
 
     doneTask(){
+        console.log("done");
         let idTaskToDone = this.parentNode.id;
         this.done = true;
         Task.doneTaskBack(idTaskToDone)
@@ -93,6 +91,7 @@ class Task {
     
     static doneTaskBack(idTaskToDone){
         this.done = true;
+        console.log("done back")
         return fetch('http://127.0.0.1:8080/todos/' + idTaskToDone, {
         method:'put',
         headers: {
@@ -104,17 +103,18 @@ class Task {
     
     static doneTaskFront(idTaskToDone){
 
-        document.getElementById(idTaskToDone).remove();
+        console.log("done front")
+        
         //console.log("doneTaskFront : ", this)
 
         fetch('http://127.0.0.1:8080/todos/' + idTaskToDone)
         .then(response => response.json())
-        .then(data => {console.log("DATAAAAAAAA : ", data); return data})
+        //.then(data => {console.log("DATAAAAAAAA : ", data); return data})
         .then(data => {
             let doneTask = new Task(data.name,data.date, data.description, data.priority);
             doneTask.setID(idTaskToDone);
             doneTask.done = data.done;
-            console.log("doneTASKKKKKKKK : ", doneTask)
+            document.getElementById(idTaskToDone).remove()
             doneTask.createFront(idTaskToDone)
         })
         .catch(err => console.log("rr", err))
