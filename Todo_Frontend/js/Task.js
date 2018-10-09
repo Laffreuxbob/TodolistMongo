@@ -20,6 +20,8 @@ class Task {
     
     delete(){
         //console.log("delete");
+        let infos = document.getElementById("infos");
+        infos.innerHTML = "";
         let idToDelete = this.parentNode.id;
         Task.deleteBack(idToDelete)
         .then(Task.deleteFront(idToDelete))
@@ -61,6 +63,7 @@ class Task {
         .then(response => {return (response.status === 200) ? response.json() : Promise.reject("Nom deja existant");})
         .catch(err => console.log("erreur : ", err)) // POPUP
     }
+    
 
     createFront(idMongo){
         //console.log("create front");
@@ -68,7 +71,7 @@ class Task {
         let taskFront = document.createElement('li');
         taskFront.className = "list-group-item";
         taskFront.getAttributeNode("class").value += " priority"+this.priority;
-
+        
         let nameTaskFront = document.createElement('span')
         nameTaskFront.innerHTML = this.name;
         taskFront.appendChild(nameTaskFront);
@@ -95,7 +98,7 @@ class Task {
         infoButton.addEventListener("click", this.getInfoDisplay)
         
         taskFront.appendChild(infoButton)
-
+        
         let editButton = document.createElement('button');
         editButton.innerHTML = "edit";
         editButton.className = "btn btn-warning"
@@ -110,15 +113,17 @@ class Task {
     }
     
     doneTask(){
+        let infos = document.getElementById("infos");
+        infos.innerHTML = "";
         let idTaskToDone = this.parentNode.id;
         Task.doneTaskBack(idTaskToDone)
-        .then(
-            document.getElementById(idTaskToDone).remove(),
-            Task.doneTaskFront(idTaskToDone)
-            )
-            .catch(err => console.log("erreur", err))
+        .then(document.getElementById(idTaskToDone).remove(),
+        Task.doneTaskFront(idTaskToDone),
+        location.reload()
+        )
+        .catch(err => console.log("erreur", err))
     }
-        
+    
     static doneTaskBack(idTaskToDone){
         return fetch('http://127.0.0.1:8080/todos/' + idTaskToDone, {
         method:'put',
@@ -153,32 +158,76 @@ class Task {
         })
         .catch(err => console.log("rr", err))
     }
-
+    
     editName(){
-        console.log(this.parentNode.id)
-
+        let infos = document.getElementById("infos");
+        infos.innerHTML = "";
+        
+        let oldName = this.parentNode.firstChild.innerHTML;
+        let idTaskToEdit = this.parentNode.id;
+        
         //var divs = document.querySelectorAll("li:not(#"+this.parentNode.id+")");
         var lis = document.querySelectorAll("li");
         var lisNotToEdit = []
-
+        
         for(let li in lis){
             if(typeof lis[li] === "object" && lis[li].id != this.parentNode.id){
                 lisNotToEdit.push(lis[li])
             }
         }
         for(let i = 0; i < lisNotToEdit.length; i++){
-            let input = lisNotToEdit[i].firstChild.firstChild
-            console.log(input)
-            console.log(typeof input)
-            //lisNotToEdit[i].firstChild.firstChild.remove();
+            let input = lisNotToEdit[i].firstChild.firstChild;
+            if(input && input.id == "newName"){
+                console.log(input);
+                input.remove();
+            }
         }
-        
-        //document.getElementById('newName').remove();
         let taskToEdit = document.getElementById(this.parentNode.id)
-        taskToEdit.firstChild.innerHTML = '<input type="text" id="newName" class="form-control"> <button class="btn btn-dark" onclick="changeName()">&#8634;</button>'
-    }
+        taskToEdit.firstChild.innerHTML = '<div id="newName"> \
+        <input type="text" class="form-control" id = "inputEditedName" require> \
+        <button id="editNameForm" class="btn btn-dark">&#8634;</button>\ </div>'
+        
+        // let divEditName = document.createElement('div');
+        // divEditName.id = "newName";
+        
+        // let inputEditName = document.createElement('input');
+        // inputEditName.type = "text";
+        // inputEditName.className = "form-control";
+        
+        // let buttonEditName = document.createElement('button');
+        // buttonEditName.id = "editNameForm";
+        // buttonEditName.className = "btn btn-dark";
+        // buttonEditName.innerHTML = "&#8634;";
+        // buttonEditName.addEventListener("click", this.changeName)
+        
+        // divEditName.appendChild(inputEditName);
+        // divEditName.appendChild(buttonEditName);
+        
+        // taskToEdit.firstChild.appendChild(divEditName);
+        
+        let buttonSubmitEditedName = document.getElementById("editNameForm")
+        buttonSubmitEditedName.addEventListener("click", () => {
+            let editedName = document.getElementById("inputEditedName").value || oldName;
+            if( editedName.toLowerCase() == oldName.toLowerCase() || this.editedName == ""){
+                console.log("Le nom n'a pas été changé") //POPUP
+            }
+            fetch('http://127.0.0.1:8080/todos/' + idTaskToEdit, {
+            method:'put',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body:JSON.stringify({"name": editedName})})
+            //.then(response => {console.log(response); return response})
+            .then(document.getElementById("newName").remove(), document.getElementById(idTaskToEdit).firstChild.innerHTML = editedName)
+            .catch(err => console.log("erreur : ", err)) // POPUP           
+        })
 
-    static changeName(){
-        console.log(this)
-    }
+        
+        
+    }  
 }
+
+
+
+

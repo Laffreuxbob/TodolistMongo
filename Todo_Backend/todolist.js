@@ -211,7 +211,7 @@ server.put('/todos/:id', (req, res) => {
             res.end();
         })
         .catch(err => {
-            console.log('An error occured inserting todo in mongo.', err)
+            console.log('An error occured editing todo in mongo.', err)
         })      
     });
     
