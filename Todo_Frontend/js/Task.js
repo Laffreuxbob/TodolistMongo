@@ -22,10 +22,17 @@ class Task {
         //console.log("delete");
         let infos = document.getElementById("infos");
         infos.innerHTML = "";
+        
+        //let verif = new Popup("delete");
+        //verif.create();
+        
+        //if(verif.out){
         let idToDelete = this.parentNode.id;
         Task.deleteBack(idToDelete)
         .then(Task.deleteFront(idToDelete))
         .catch(err => console.log("erreur : ", err)) // POPUP
+        //}
+        
     }
     
     static deleteBack(idToDelete){
@@ -64,7 +71,7 @@ class Task {
         .catch(err => console.log("erreur : ", err)) // POPUP
     }
     
-
+    
     createFront(idMongo){
         //console.log("create front");
         //console.log(idMongo)
@@ -222,7 +229,7 @@ class Task {
             .then(document.getElementById("newName").remove(), document.getElementById(idTaskToEdit).firstChild.innerHTML = editedName)
             .catch(err => console.log("erreur : ", err)) // POPUP           
         })
-
+        
         
         
     }  
