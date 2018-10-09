@@ -1,17 +1,31 @@
+# Todo list, nodeJS and MongDB
+
+
+## Installing
+```
 cd Todo_Backend/
-npm install
+npm i
+```
 
+```
 cd Todo_Frontend/
-npm install
-
-/Back => npm run dev
-
-/Front => npm start
-
+npm i
+```
+```
 install mongoDB & mongod
+```
+
+## Start
+```
+/Todo_Backend => npm run dev
+```
+```
+/Todo_Frontend => npm run start
+```
+```
 sudo service mongod start 
+```
 
+### On your browser : http://127.0.0.1:8081
 
-On your browser : http://127.0.0.1:8081
-
-Enjoy !
+### Enjoy !
