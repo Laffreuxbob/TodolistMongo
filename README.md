@@ -1,5 +1,8 @@
 # Todo list, nodeJS and MongDB
 
+Simple todo list to learn the client server principle
+Backend server in nodeJS with a restAPI 
+MongoDB database 
 
 ## Installing
 ```
