@@ -47,7 +47,7 @@ function add(){
   newName.value = "";
   newDate.value = "";
   newDescription.value = "";
-  newPriority.value = "";
+  newPriority.value = P0;
 }
 function cancelAdd(){
   document.getElementById("addName").value = "";
@@ -59,6 +59,16 @@ function cancelAdd(){
 
 function test(){
   console.log("test")
+}
+
+function searchTask(word){
+  fetch('http://127.0.0.1:8080/todosSearch/' + word, {method:'get'})
+  .then(response =>  response.json())
+  .then(data => {console.log(data);})
+  .then(data => data)
+  .catch(err => {
+    console.log('Error occured with fetching ressources : ' + err)
+  });
 }
 
 window.onload=function(){
