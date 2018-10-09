@@ -67,7 +67,11 @@ class Task {
         //console.log(idMongo)
         let taskFront = document.createElement('li');
         taskFront.className = "list-group-item";
-        taskFront.innerHTML = this.name;
+        taskFront.getAttributeNode("class").value += " priority"+this.priority;
+
+        let nameTaskFront = document.createElement('span')
+        nameTaskFront.innerHTML = this.name;
+        taskFront.appendChild(nameTaskFront);
         //taskFront.innerHTML += " _ " + this.id;
         taskFront.id = idMongo;
         
@@ -91,6 +95,13 @@ class Task {
         infoButton.addEventListener("click", this.getInfoDisplay)
         
         taskFront.appendChild(infoButton)
+
+        let editButton = document.createElement('button');
+        editButton.innerHTML = "edit";
+        editButton.className = "btn btn-warning"
+        editButton.addEventListener("click", this.editName)
+        
+        taskFront.appendChild(editButton)
         
         
         let parent = (this.done) ? document.getElementById("todoDisplayDonelist") : document.getElementById("todoDisplayList");
@@ -102,6 +113,7 @@ class Task {
         let idTaskToDone = this.parentNode.id;
         Task.doneTaskBack(idTaskToDone)
         .then(
+            document.getElementById(idTaskToDone).remove(),
             Task.doneTaskFront(idTaskToDone)
             )
             .catch(err => console.log("erreur", err))
@@ -118,11 +130,8 @@ class Task {
     }
     
     static doneTaskFront(idTaskToDone){
-        
-        document.getElementById(idTaskToDone)
-        
-        fetch('http://127.0.0.1:8080/todos/' + idTaskToDone)
-        .then(response => response.json())
+        return fetch('http://127.0.0.1:8080/todos/' + idTaskToDone)
+        .then(response => {  return response.json()})
         .then(data => {
             let doneTask = new Task(data.name,data.date, data.description, data.priority, data.done);
             doneTask.setID(idTaskToDone);
@@ -132,13 +141,44 @@ class Task {
     }
     
     getInfoDisplay(){
+        console.log(this.parentNode.id)
         let infos = document.getElementById("infos")
-        
-        fetch('http://127.0.0.1:8080/todos/' + this.id)
+        fetch('http://127.0.0.1:8080/todos/' + this.parentNode.id)
         .then(response => response.json())
         .then(data => {
-            infos.innerHTML = JSON.stringify(data)
+            infos.innerHTML = data.name
+            infos.innerHTML += data.priority
+            infos.innerHTML += data.date
+            infos.innerHTML += data.ajout
         })
         .catch(err => console.log("rr", err))
+    }
+
+    editName(){
+        console.log(this.parentNode.id)
+
+        //var divs = document.querySelectorAll("li:not(#"+this.parentNode.id+")");
+        var lis = document.querySelectorAll("li");
+        var lisNotToEdit = []
+
+        for(let li in lis){
+            if(typeof lis[li] === "object" && lis[li].id != this.parentNode.id){
+                lisNotToEdit.push(lis[li])
+            }
+        }
+        for(let i = 0; i < lisNotToEdit.length; i++){
+            let input = lisNotToEdit[i].firstChild.firstChild
+            console.log(input)
+            console.log(typeof input)
+            //lisNotToEdit[i].firstChild.firstChild.remove();
+        }
+        
+        //document.getElementById('newName').remove();
+        let taskToEdit = document.getElementById(this.parentNode.id)
+        taskToEdit.firstChild.innerHTML = '<input type="text" id="newName" class="form-control"> <button class="btn btn-dark" onclick="changeName()">&#8634;</button>'
+    }
+
+    static changeName(){
+        console.log(this)
     }
 }

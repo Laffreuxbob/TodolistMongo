@@ -1,6 +1,13 @@
+/* *{ border : 1px solid black;} */
+
+*{
+    box-sizing: border-box;
+}
+
 h1{
     color: red;
     text-align: center;
+    margin: 5vh;
 }
 
 #mainContent{
@@ -14,29 +21,67 @@ h1{
     padding: 0;
 }
 
+#mainContent ul li {
+    padding: 5%;
+    
+    margin-bottom: 3%;
+    margin-top: 3%;
+
+    border-radius: 2vh ;
+
+    text-transform: uppercase;
+    color: white;
+}
+
+#mainContent ul li:hover{
+    box-shadow: inset -2px -2px 6px black;
+}
+
+.priority0{
+    background-color: rgba(180,180,180,1);
+    opacity: 0.8;
+}
+.priority1{
+    background-color: rgba(120,120,120,1);
+    opacity: 0.8;
+}
+.priority2{
+    background-color: rgba(70,70,70,1);
+    opacity: 0.8;
+}
+
+#mainContent ul li button {
+    text-align: left;
+    float: right;
+}
+
 #mainContent  ul::-webkit-scrollbar { 
     display: none; 
 }
 
 #todoDisplay{
     flex : 50%;
+    padding: 1rem;
 }
 
 #todoDisplayDone{
     flex : 50%;
+    padding: 1rem;
 }
 
 #allContent{
     display: flex;
+    margin-top: 10vh;
 }
 
 #formAdd{
-    flex : 1%;
-    margin-left: 2%;
+    flex : 10%;
+    padding: 1rem;
 }
 
 #infos{
-    flex : 10%
+    flex : 10%;
+    padding-top: 1rem;
 }
 
 #todoDisplayDonelist > li > .doneButton{
@@ -44,7 +89,12 @@ h1{
     border: 10px solid black;
 }
 
-#formAdd, #todoDisplay, #todoDisplayDone{
+/* #formAdd, #todoDisplay, #todoDisplayDone{
     border: 1px solid grey;
+} */
+
+#fields{
+    display: flex;
+    justify-content: space-around;
 }
 

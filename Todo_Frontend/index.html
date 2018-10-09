@@ -15,18 +15,21 @@
 </head>
 <body>
     <h1>To do list Nodejs</h1>
-
-
-
-    <div id="search">
-        Recherche
-        <input type="text" id="inputSearchTask">
+    
+    
+    <div id="fields">
+        <div id="search">
+            Recherche
+            <input type="text" id="inputSearchTask">
+        </div>
+        <button id="versionButton" onclick="getVersion()">Version</button>
     </div>
     
-    <button id="versionButton" onclick="getVersion()">Version</button>
+    
     
     <div id="allContent">
         <div id="formAdd">
+            <h4>Ajout</h4>
             <div class="form-group">
                 <label for="">Nouvelle tache
                     <input type="text" id="addName" class="form-control">
@@ -51,8 +54,8 @@
                     </select>
                 </label>
             </div>
-            <button type="submit" id="addButton">Ajouter</button>
-            <button id="cancelAddButton">Annuler</button>
+            <button type="submit" id="addButton" class="btn btn-outline-success">Ajouter</button>
+            <button id="cancelAddButton" class="btn btn-outline-danger">Annuler</button>
         </div>
         
         <div id="mainContent">
@@ -73,7 +76,7 @@
         </div>
         
         <div id="infos">
-            Infos
+            <h4>Infos</h4>
         </div>
         
         
