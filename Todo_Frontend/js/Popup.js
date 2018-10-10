@@ -2,7 +2,6 @@ class Popup{
     constructor(type, task){
         this.type = type;
         this.task = task;
-        this.out;
     }
     
     create(){
@@ -11,21 +10,22 @@ class Popup{
         bigDiv.style = "position: fixed; width: 100%;height: 100%;left: 0;top: 0;background: rgba(51,51,51,0.4);z-index: 10;";
         
         let littleDiv = document.createElement("div");
-        littleDiv.style = "position: fixed; left: 50%; top: 50%;transform: translate(-50%, -50%); background-color: lightgray;";
+        littleDiv.id = "littleDivPopup"
+        littleDiv.style = "";
         
-        let buttonSucces =  document.createElement("button");
-        buttonSucces.innerHTML = "Fermer";
-        buttonSucces.addEventListener("click", this.success);
+        let buttonClose =  document.createElement("button");
+        buttonClose.innerHTML = "Fermer";
+        buttonClose.addEventListener("click", () => {document.getElementById("popupDiv").remove()});
         
         littleDiv.appendChild( this.speak());
         
         let buttonField = document.createElement('div');
-        buttonField.style = "display: flex; justify-content: center"
+        buttonField.id = "buttonFieldPopup"
         
-        buttonField.appendChild(buttonSucces)
+        buttonField.appendChild(buttonClose)
         if(this.type == "delete"){
             let buttonFail =  document.createElement("button");
-            buttonFail.innerHTML = "delete";
+            buttonFail.innerHTML = "Supprimer";
             buttonFail.addEventListener("click", () => {
                 document.getElementById("popupDiv").remove();
                 fetch('http://127.0.0.1:8080/delete/' + this.task._id, {
@@ -103,6 +103,7 @@ class Popup{
     infosSearch(){
         let taskToDisplay = this.task;
         let contentInfos = document.createElement('div');
+        contentInfos.id = "contentPopup";
         Object.keys(taskToDisplay).map(function(objectKey, index) {
             if(objectKey != "_id"){
                 let liInfos = document.createElement('li');
@@ -115,30 +116,23 @@ class Popup{
     }
     
     infosDelete(){
-        let deletePopup = document.createElement('span');
-        deletePopup.innerHTML = "Etes vous sur ?"
+        let deletePopup = document.createElement('div');
+        deletePopup.innerHTML = "Etes vous sur de vouloir supprimer la tache ?"
+        deletePopup.id = "contentPopup";
         return deletePopup;
     }
     
     infosErrorSearch(){
-        let errorSearchPopup = document.createElement('span');
-        errorSearchPopup.innerHTML = "Pas de resultat"
+        let errorSearchPopup = document.createElement('div');
+        errorSearchPopup.innerHTML = "Pas de resultat pour cette recherche."
+        errorSearchPopup.id = "contentPopup";
         return errorSearchPopup;
     }
     
-    success(){
-        document.getElementById("popupDiv").remove();
-        return this.out = true;
-    }
-    
-    fail(){
-        document.getElementById("popupDiv").remove();
-        return this.out = false;
-    }
-    
-    getOut(){
-        return this.out;
-    }
+    // closePopup(){
+    //     document.getElementById("popupDiv").remove();
+    // }
+
     
     // wait(){
     //     function setup(){

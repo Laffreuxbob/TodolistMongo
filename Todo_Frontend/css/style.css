@@ -26,9 +26,9 @@ h1{
     
     margin-bottom: 3%;
     margin-top: 3%;
-
+    
     border-radius: 2vh ;
-
+    
     text-transform: uppercase;
     color: white;
 }
@@ -89,12 +89,45 @@ h1{
     border: 10px solid black;
 }
 
-/* #formAdd, #todoDisplay, #todoDisplayDone{
-    border: 1px solid grey;
-} */
-
 #fields{
     display: flex;
     justify-content: space-around;
+}
+
+#littleDivPopup{
+
+    border : 3px solid red;
+
+    position: fixed;
+    left: 50%; 
+    top: 50%;
+    width: 30%;
+    min-height: 20%;
+    transform: translate(-50%, -50%); 
+    background-color: lightgray;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+#contentPopup{
+
+    border: 3px solid blue;
+    width: 100%;
+    margin: 0;
+
+    align-self: flex-start;
+}
+
+#buttonFieldPopup{
+
+    border: 3px solid green;
+    width: 100%;
+    text-align: center;
+    display: flex; 
+    justify-content: center;
+
+    align-self: flex-end;
 }
 
