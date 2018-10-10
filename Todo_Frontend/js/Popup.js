@@ -14,7 +14,7 @@ class Popup{
         littleDiv.style = "position: fixed; left: 50%; top: 50%;transform: translate(-50%, -50%); background-color: lightgray;";
         
         let buttonSucces =  document.createElement("button");
-        buttonSucces.innerHTML = "ok";
+        buttonSucces.innerHTML = "Fermer";
         buttonSucces.addEventListener("click", this.success);
         
         littleDiv.appendChild( this.speak());
@@ -26,7 +26,10 @@ class Popup{
         if(this.type == "delete"){
             let buttonFail =  document.createElement("button");
             buttonFail.innerHTML = "cancel";
-            buttonFail.addEventListener("click", this.fail);
+            buttonFail.addEventListener("click", () => {
+                document.getElementById("popupDiv").remove();
+                console.log('test')
+            });
             buttonField.appendChild(buttonFail)
         }
         if(this.type == "search"){
@@ -51,7 +54,6 @@ class Popup{
                         Object.keys(value).map(function(key, item) {
                             let val = value[key];
                             dataMap[key] = val;
-                            //console.log(val);
                         })
                     })
                     return dataMap; 
