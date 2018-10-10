@@ -43,7 +43,7 @@ class Task {
     }
     
     static deleteFront(idToDelete){
-        console.log("deleteFront : ", idToDelete);
+        //console.log("deleteFront : ", idToDelete);
         
         document.getElementById(idToDelete).remove();
     }
@@ -141,27 +141,27 @@ class Task {
         // .catch(err => console.log("erreur", err))
     }
     
-    static doneTaskBack(idTaskToDone){
-        return fetch('http://127.0.0.1:8080/todos/' + idTaskToDone, {
-        method:'put',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        },
-        body:JSON.stringify({"done": true})})
-        .catch( err => {console.log("err : ", err)})
-    }
+    // static doneTaskBack(idTaskToDone){
+    //     return fetch('http://127.0.0.1:8080/todos/' + idTaskToDone, {
+    //     method:'put',
+    //     headers: {
+    //         'Accept': 'application/json',
+    //         'Content-Type': 'application/json'
+    //     },
+    //     body:JSON.stringify({"done": true})})
+    //     .catch( err => {console.log("err : ", err)})
+    // }
     
-    static doneTaskFront(idTaskToDone){
-        return fetch('http://127.0.0.1:8080/todos/' + idTaskToDone)
-        .then(response => {  return response.json()})
-        .then(data => {
-            let doneTask = new Task(data.name,data.date, data.description, data.priority, data.done);
-            doneTask.setID(idTaskToDone);
-            doneTask.createFront(idTaskToDone);
-        })
-        .catch(err => console.log("rr", err)) 
-    }
+    // static doneTaskFront(idTaskToDone){
+    //     return fetch('http://127.0.0.1:8080/todos/' + idTaskToDone)
+    //     .then(response => {  return response.json()})
+    //     .then(data => {
+    //         let doneTask = new Task(data.name,data.date, data.description, data.priority, data.done);
+    //         doneTask.setID(idTaskToDone);
+    //         doneTask.createFront(idTaskToDone);
+    //     })
+    //     .catch(err => console.log("rr", err)) 
+    // }
     
     getInfoDisplay(){
         let infos = document.getElementById("infos")
@@ -215,9 +215,7 @@ class Task {
         for (let i = 0; i < buttonsTodisabled.length; i++){
             buttonsTodisabled[i].disabled = true;
         }
-        
-        console.log(buttonsTodisabled)
-        
+                
         let oldName = this.parentNode.firstChild.innerHTML;
         let idTaskToEdit = this.parentNode.id;
         
@@ -233,7 +231,7 @@ class Task {
         for(let i = 0; i < lisNotToEdit.length; i++){
             let input = lisNotToEdit[i].firstChild.firstChild;
             if(input && input.id == "newName"){
-                console.log(input);
+                //console.log(input);
                 input.remove();
             }
         }

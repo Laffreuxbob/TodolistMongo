@@ -50,7 +50,6 @@ class Popup{
                 infos.innerHTML = ""
                 let dataMap = {};
                 let urls = ['http://127.0.0.1:8080/todos/'+ this.task._id, 'http://127.0.0.1:8080/todosInfos/'+ this.task._id];
-                console.log(urls)
                 var promises = urls.map(url => fetch(url)
                 .then(data => data.json())
                 .catch(err => {
@@ -103,11 +102,9 @@ class Popup{
                 .then( data => {
                     let doneTask = new Task(data.name,data.date, data.description, data.priority, data.done);
                     doneTask.setID(this.task._id)
-                    console.log(doneTask)
                     return doneTask
                 })
                 .then( doneTask => {
-                    console.log(doneTask)
                     doneTask.createFront(doneTask.id)
                 } )
                 .catch(err => console.log("erreur : ", err))

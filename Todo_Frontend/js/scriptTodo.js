@@ -64,7 +64,7 @@ function searchTask(word){
   document.getElementById("infos").innerHTML = "";
   fetch('http://127.0.0.1:8080/todosSearch/' + word, {method:'get'})
   .then(response =>  response.json())
-  .then(data => {console.log(data); let popupSearch = new Popup("search", (data)); popupSearch.create()})
+  .then(data => {let popupSearch = new Popup("search", (data)); popupSearch.create()})
   //.then(data => data)
   .then(data => data)
   .catch(err => {
