@@ -13,25 +13,41 @@ class Popup{
         let littleDiv = document.createElement("div");
         littleDiv.style = "position: fixed; left: 50%; top: 50%;transform: translate(-50%, -50%); background-color: lightgray;";
         
-        let buttonSucces =  document.createElement("button");
-        buttonSucces.innerHTML = "ok";
-        buttonSucces.addEventListener("click", this.success);
-        
         littleDiv.appendChild( this.speak());
         
         let buttonField = document.createElement('div');
         buttonField.style = "display: flex; justify-content: center"
         
-        buttonField.appendChild(buttonSucces)
         if(this.type == "delete"){
+            let infos = document.getElementById("infos");
+            infos.innerHTML = "";
+
+            let buttonDelete = document.createElement("button");
+            buttonDelete.innerHTML = "delete";
+            
+            buttonDelete.addEventListener("click", () => {
+                document.getElementById("popupDiv").remove();
+                
+                let idToDelete = this.task._id;
+                console.log("TASK : ", idToDelete)
+                Task.deleteBack(idToDelete)
+                .then(Task.deleteFront(idToDelete))
+                .catch(err => console.log("erreur : ", err))
+                
+            });
+           
             let buttonFail =  document.createElement("button");
             buttonFail.innerHTML = "cancel";
             buttonFail.addEventListener("click", this.fail);
-            buttonField.appendChild(buttonFail)
+            
+            buttonField.appendChild(buttonFail);
+            buttonField.appendChild(buttonDelete);
         }
-        if(this.type == "search"){
+        else if(this.type == "search"){
+            console.log(this)
             let buttonInfos =  document.createElement("button");
             buttonInfos.innerHTML = "infos";
+            
             buttonInfos.addEventListener("click", () => {
                 document.getElementById("popupDiv").remove();
                 let infos = document.getElementById("infos")
@@ -51,7 +67,6 @@ class Popup{
                         Object.keys(value).map(function(key, item) {
                             let val = value[key];
                             dataMap[key] = val;
-                            //console.log(val);
                         })
                     })
                     return dataMap; 
@@ -73,6 +88,13 @@ class Popup{
                     });
                 }); 
             });
+            
+            let buttonSucces =  document.createElement("button");
+            buttonSucces.innerHTML = "ok";
+            buttonSucces.addEventListener("click", this.success);
+            
+
+            buttonField.appendChild(buttonSucces)
             buttonField.appendChild(buttonInfos)
         }
         

@@ -13,36 +13,34 @@ class Task {
     test(){
         console.log("test")
     }
-    
+
     setID(idMongo){
         this.id = idMongo;
+    }
+    static getID(){
+        console.log(this.id)
+        return this.id;
     }
     
     delete(){
         //console.log("delete");
         let infos = document.getElementById("infos");
         infos.innerHTML = "";
-        
-        //let verif = new Popup("delete");
-        //verif.create();
-        
-        //if(verif.out){
-        let idToDelete = this.parentNode.id;
-        Task.deleteBack(idToDelete)
-        .then(Task.deleteFront(idToDelete))
-        .catch(err => console.log("erreur : ", err)) // POPUP
-        //}
-        
+        console.log(Task.getID())
+        let verif = new Popup("delete", self);
+        verif.create();
     }
     
     static deleteBack(idToDelete){
-        //console.log("deleteBack");
+        console.log("deleteBack : ", idToDelete);
         return fetch('http://127.0.0.1:8080/delete/' + idToDelete, {
         method:'delete'})
         .catch(err => console.log("erreur : ", err)) // POPUP
     }
     
     static deleteFront(idToDelete){
+        console.log("deleteFront : ", idToDelete);
+
         document.getElementById(idToDelete).remove();
     }
     
