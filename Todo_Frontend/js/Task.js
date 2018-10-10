@@ -192,30 +192,7 @@ class Task {
                     infos.appendChild(liInfo)
                 }
             });
-        });
-        
-        
-        // Object.keys(dataMap).map(function(objectKey, index) {
-        //     var value = dataMap[objectKey];
-        //     console.log(value);
-        // });
-        
-        // for (let index in dataMap){
-        //     console.log('test')
-        //     if(index !== "id"){
-        //         let liInfo = document.createElement('li');
-        //         liInfo.className = "list-group-item list-group-item-action";
-        //         liInfo.textContent = index + " : " + dataMap[index];
-        //         console.log(liInfo)
-        //         if(index === "total" || index === "restant"){
-        //             liInfo.textContent += " jours"
-        //             if(parseInt(dataMap[index]) < 0){
-        //                 liInfo.style.backgroundColor = '#ff9999'
-        //             }
-        //         }
-        //         infos.appendChild(liInfo)
-        //     }
-        // }   
+        }); 
     }
     
     

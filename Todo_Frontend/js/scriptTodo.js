@@ -63,10 +63,12 @@ function test(){
 function searchTask(word){
   fetch('http://127.0.0.1:8080/todosSearch/' + word, {method:'get'})
   .then(response =>  response.json())
-  .then(data => {console.log(data);})
+  .then(data => {console.log(data); let popupSearch = new Popup("search", (data)); popupSearch.create()})
+  //.then(data => data)
   .then(data => data)
-  .then(data => {let popupSearch = new Popup("search", data); popupSearch.create()})
   .catch(err => {
+    let popupSearch = new Popup("errorSearch", err ); 
+    popupSearch.create();
     console.log('Error occured with fetching ressources : ' + err)
   });
 }
@@ -76,7 +78,6 @@ window.onload=function(){
   inputSearch.addEventListener("keyup", function(event) {
     event.preventDefault();
     if (event.keyCode === 13) {
-      console.log(inputSearch.value)
       searchTask(inputSearch.value)
       inputSearch.value = "";
     }
