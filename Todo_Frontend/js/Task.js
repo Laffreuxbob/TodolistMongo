@@ -13,7 +13,7 @@ class Task {
     test(){
         console.log("test")
     }
-
+    
     setID(idMongo){
         this.id = idMongo;
     }
@@ -22,8 +22,15 @@ class Task {
         //console.log("delete");
         let infos = document.getElementById("infos");
         infos.innerHTML = "";
-        let verif = new Popup("delete", self);
-        verif.create();
+        fetch('http://127.0.0.1:8080/todos/' + this.parentNode.id)
+        .then(response => response.json())
+        .then( data => {console.log(data); return data})
+        .then(data => {
+            let verif = new Popup("delete", data);
+            verif.create();
+        })
+        .catch(err => console.log("erreur : ", err))
+        
     }
     
     static deleteBack(idToDelete){
@@ -35,7 +42,7 @@ class Task {
     
     static deleteFront(idToDelete){
         console.log("deleteFront : ", idToDelete);
-
+        
         document.getElementById(idToDelete).remove();
     }
     

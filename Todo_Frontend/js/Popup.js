@@ -25,10 +25,13 @@ class Popup{
         buttonField.appendChild(buttonSucces)
         if(this.type == "delete"){
             let buttonFail =  document.createElement("button");
-            buttonFail.innerHTML = "cancel";
+            buttonFail.innerHTML = "delete";
             buttonFail.addEventListener("click", () => {
                 document.getElementById("popupDiv").remove();
-                console.log('test')
+                fetch('http://127.0.0.1:8080/delete/' + this.task._id, {
+                method:'delete'})
+                .then( document.getElementById(this.task._id).remove())
+                .catch(err => console.log("erreur : ", err))
             });
             buttonField.appendChild(buttonFail)
         }
