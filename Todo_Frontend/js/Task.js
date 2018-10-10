@@ -153,57 +153,71 @@ class Task {
     }
     
     getInfoDisplay(){
-        console.log(this.parentNode.id)
         let infos = document.getElementById("infos")
-        fetch('http://127.0.0.1:8080/todos/' + this.parentNode.id)
-        .then(response => response.json())
-        .then(data => {
-            infos.innerHTML = data.name
-            infos.innerHTML += data.priority
-            infos.innerHTML += data.date
-            infos.innerHTML += data.ajout
+        infos.innerHTML = ""
+        
+        let dataMap = {};
+        let urls = ['http://127.0.0.1:8080/todos/'+ this.parentNode.id, 'http://127.0.0.1:8080/todosInfos/'+ this.parentNode.id];
+        
+        var promises = urls.map(url => fetch(url)
+        .then(data => data.json())
+        .catch(err => {
+            console.log('Error occured with fetching ressources : ' + err)
+        }));
+        
+        Promise.all(promises)
+        .then(results => {
+            Object.keys(results).map(function(objectKey, index) {
+                var value = results[objectKey];   
+                Object.keys(value).map(function(key, item) {
+                    let val = value[key];
+                    dataMap[key] = val;
+                    //console.log(val);
+                })
+            })
+            return dataMap; 
         })
-        .catch(err => console.log("rr", err))
+        .then( dataMap => {
+            Object.keys(dataMap).map(function(objectKey, index) {
+                if(objectKey !== "_id"){
+                    let liInfo = document.createElement('li');
+                    liInfo.className = "list-group-item list-group-item-action";
+                    liInfo.textContent = objectKey + " : " + dataMap[objectKey];
+                    if(objectKey === "total" || objectKey === "restant"){
+                        liInfo.textContent += " jours"
+                        if(parseInt(dataMap[index]) < 0){
+                            liInfo.style.backgroundColor = '#ff9999'
+                        }
+                    }
+                    infos.appendChild(liInfo)
+                }
+            });
+        });
+        
+        
+        // Object.keys(dataMap).map(function(objectKey, index) {
+        //     var value = dataMap[objectKey];
+        //     console.log(value);
+        // });
+        
+        // for (let index in dataMap){
+        //     console.log('test')
+        //     if(index !== "id"){
+        //         let liInfo = document.createElement('li');
+        //         liInfo.className = "list-group-item list-group-item-action";
+        //         liInfo.textContent = index + " : " + dataMap[index];
+        //         console.log(liInfo)
+        //         if(index === "total" || index === "restant"){
+        //             liInfo.textContent += " jours"
+        //             if(parseInt(dataMap[index]) < 0){
+        //                 liInfo.style.backgroundColor = '#ff9999'
+        //             }
+        //         }
+        //         infos.appendChild(liInfo)
+        //     }
+        // }   
     }
-
-
-    ///////////////////////////////////////////////////////////////////////// GET INFOS WITH MAP URLS
-    // getInfoDisplay(){
-    //     let infos = document.getElementById("infos")
-    //     infos.innerHTML = "";
-        
-    //     let dataMap = {};
-    //     urls = ['http://127.0.0.1:8080/todos/'+ this.parentNode.id, 'http://127.0.0.1:8080/todosInfos/'+ this.parentNode.id];
-        
-    //     var promises = urls.map(url => fetch(url)
-    //     .then(data => data.json())
-    //     .catch(err => {
-    //       console.log('Error occured with fetching ressources : ' + err)
-    //     }));
-    //     Promise.all(promises).then(results => {
-    //       Object.keys(results).map(function(objectKey, index) {
-    //         var value = results[objectKey];      
-    //         Object.keys(value).map(function(key, item) {
-    //           let val = value[key];
-    //           dataMap[key] = val;
-    //         })
-            
-    //       });
-    //       for (let index in dataMap){
-    //         if(index !== "id"){
-    //           let liInfo = document.createElement('li');
-    //           liInfo.className = "list-group-item list-group-item-action";
-    //           liInfo.textContent = index + " : " + dataMap[index];
-    //           if(index === "total" || index === "restant"){
-    //             liInfo.textContent += " jours"
-    //             if(parseInt(dataMap[index]) < 0){
-    //               liInfo.style.backgroundColor = '#ff9999'
-    //             }
-    //           }
-    //           infos.appendChild(liInfo)
-    //         }
-    //       }
-    //     })
+    
     
     editName(){
         let infos = document.getElementById("infos");

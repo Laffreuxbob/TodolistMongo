@@ -28,7 +28,6 @@ function displayTasks(obj){
   //const underscore = require("underscore");
   //underscore.sortBy(obj, 'priority')
   
-  
   for(key in obj){
     let task = new Task(obj[key].name,obj[key].date, obj[key].description,  obj[key].priority, obj[key].done);
     task.createFront(obj[key]._id);      
@@ -47,7 +46,7 @@ function add(){
   newName.value = "";
   newDate.value = "";
   newDescription.value = "";
-  newPriority.value = P0;
+  newPriority.value = 0;
 }
 function cancelAdd(){
   document.getElementById("addName").value = "";
@@ -66,6 +65,7 @@ function searchTask(word){
   .then(response =>  response.json())
   .then(data => {console.log(data);})
   .then(data => data)
+  .then(data => {let popupSearch = new Popup("search", data); popupSearch.create()})
   .catch(err => {
     console.log('Error occured with fetching ressources : ' + err)
   });
