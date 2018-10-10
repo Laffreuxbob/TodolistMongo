@@ -16,14 +16,39 @@
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/p5.js" type="text/javascript"></script> -->
     
 </head>
+
+<script>
+    let langage = 0;
+    function setLangage(val){
+        //location.reload();
+        langage = val;
+        console.log(val)
+
+        let liste = ["addTitle", "todoTitle", "todoDoneTitle", "searchTitle"];
+        let text = [ ["Add", "Ajout"], ["To Do", "A faire"], ["Done", "Fait"], ["Search", "Recherche"]]
+
+        for (elem in liste){
+            console.log(liste[elem])
+            let title = document.getElementById(liste[elem])
+            title.innerHTML = (parseInt(langage)) ? text[elem][0] : text[elem][1]
+        }
+    }
+
+    setLangage(langage)
+</script>
 <body>
     <h1>To do list </h1>
+
+    <div id="langage">
+        <button type="radio" value=0 onclick="setLangage(this.value)">FR</button>
+        <button type="radio" value=1 onclick="setLangage(this.value)">EN</button>
+    </div>
     
     
     <div id="fields">
         <div id="search"> <!--class="navbar-nav"-->
             <label for="">
-                Recherche
+                <span id="searchTitle"> Search </span>                                   <!-- langage -->
                 <input type="text" id="inputSearchTask">
             </label>
             
@@ -32,7 +57,7 @@
     </div>
     <div id="allContent">
         <div id="formAdd">
-            <h4>Ajout</h4>
+            <h4 id="addTitle"> Add </h4>                                                  <!-- langage -->
             <div class="form-group">
                 <label for="">Nouvelle tache
                     <input type="text" id="addName" class="form-control">
@@ -64,14 +89,14 @@
         <div id="mainContent">
             
             <div id="todoDisplay">
-                <h4>A faire</h4>
+                <h4 id="todoTitle">To Do</h4>                                       <!-- langage -->
                 <ul id="todoDisplayList">
                     
                 </ul>
             </div>
             
             <div id="todoDisplayDone">
-                <h4>Fait</h4>
+                <h4 id="todoDoneTitle">Done</h4>                                    <!-- langage -->
                 <ul id="todoDisplayDonelist">
                     
                 </ul>
