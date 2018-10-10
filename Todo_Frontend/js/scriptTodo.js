@@ -52,7 +52,7 @@ function cancelAdd(){
   document.getElementById("addName").value = "";
   document.getElementById("addDate").value = "";
   document.getElementById("addDescription").value = "";
-  document.getElementById("addPriority").value = "";
+  document.getElementById("addPriority").value = 0;
   
 }
 

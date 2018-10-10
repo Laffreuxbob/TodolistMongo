@@ -118,7 +118,6 @@ server.get('/todosInfos/:id', (req, res) => {
         console.log('Delai restant pour la tache ' + item.name + " : " + timeLeft + "jour(s)")
         console.log('------------------------' + '\n')
         res.send( {"total":timeAll, "restant":timeLeft})
-        res.end();
     }) 
     .catch(err => console.log('An error occured searching todo with id', err));
 });
@@ -132,7 +131,7 @@ server.post('/todos/add',  (req, res) => {
     let newDate = data.date || "11-09-2020";
     let newDescription = data.description || "default_description";
     let newPriority = data.priority || "default_priority";
-
+    
     // creation du nouvel objet tache 
     let newItem = {
         "name":newName,
@@ -187,7 +186,7 @@ server.delete('/delete/:todoToDelete', (req, res) => {
 
 server.put('/todos/:id', (req, res) => {
     let idTodoToEdit = mongo.ObjectID(req.params.id);
-    mongo.db.collection('todos').findOne({_id: idTodoToEdit})  
+    return mongo.db.collection('todos').findOne({_id: idTodoToEdit})  
     .then(result => {
         if (!result) {
             console.log("Warning, task to edit not found !");
@@ -201,15 +200,19 @@ server.put('/todos/:id', (req, res) => {
         let editedDescription = datas.description || result.description;
         let editedDone = (datas.done || datas.done === false) ? datas.done : result.done;
         
-        mongo.db.collection('todos').updateOne(
+        console.log(editedName, editedDone)
+        
+        return mongo.db.collection('todos').updateOne(
+            
             {_id: idTodoToEdit},
             {
                 $set: {"name": editedName, "date": editedDate, "description": editedDescription, "done": editedDone}
             }
-            );     
-            res.status(200);
-            res.end();
+            )
         })
+        .then(() => { return  mongo.db.collection('todos').findOne({_id: idTodoToEdit} ) })
+        .then( updated => { console.log(" UP :", updated) ; res.send(updated)})
+        
         .catch(err => {
             console.log('An error occured editing todo in mongo.', err)
         })      

@@ -24,7 +24,9 @@ class Task {
         infos.innerHTML = "";
         fetch('http://127.0.0.1:8080/todos/' + this.parentNode.id)
         .then(response => response.json())
-        .then( data => {console.log(data); return data})
+        .then( data => { 
+            //console.log(data); 
+            return data})
         .then(data => {
             let verif = new Popup("delete", data);
             verif.create();
@@ -122,13 +124,21 @@ class Task {
     doneTask(){
         let infos = document.getElementById("infos");
         infos.innerHTML = "";
-        let idTaskToDone = this.parentNode.id;
-        Task.doneTaskBack(idTaskToDone)
-        .then(document.getElementById(idTaskToDone).remove(),
-        Task.doneTaskFront(idTaskToDone),
-        location.reload()
-        )
-        .catch(err => console.log("erreur", err))
+        fetch('http://127.0.0.1:8080/todos/' + this.parentNode.id)
+        .then(response => response.json())
+        .then( data => {return data})
+        .then(data => {
+            let verif = new Popup("done", data);
+            verif.create();
+        })
+        .catch(err => console.log("erreur : ", err))
+        
+
+
+        // Task.doneTaskBack(idTaskToDone)
+        // .then(() => {document.getElementById(idTaskToDone).remove()})
+        // .then(() => {Task.doneTaskFront(idTaskToDone)} )
+        // .catch(err => console.log("erreur", err))
     }
     
     static doneTaskBack(idTaskToDone){
@@ -139,6 +149,7 @@ class Task {
             'Content-Type': 'application/json'
         },
         body:JSON.stringify({"done": true})})
+        .catch( err => {console.log("err : ", err)})
     }
     
     static doneTaskFront(idTaskToDone){
@@ -200,6 +211,13 @@ class Task {
         let infos = document.getElementById("infos");
         infos.innerHTML = "";
         
+        let buttonsTodisabled = this.parentNode.querySelectorAll("button");
+        for (let i = 0; i < buttonsTodisabled.length; i++){
+            buttonsTodisabled[i].disabled = true;
+        }
+        
+        console.log(buttonsTodisabled)
+        
         let oldName = this.parentNode.firstChild.innerHTML;
         let idTaskToEdit = this.parentNode.id;
         
@@ -257,6 +275,11 @@ class Task {
             body:JSON.stringify({"name": editedName})})
             //.then(response => {console.log(response); return response})
             .then(document.getElementById("newName").remove(), document.getElementById(idTaskToEdit).firstChild.innerHTML = editedName)
+            .then( () => {
+                for (let i = 0; i < buttonsTodisabled.length; i++){
+                    buttonsTodisabled[i].disabled = false;
+                }
+            })
             .catch(err => console.log("erreur : ", err)) // POPUP           
         })
         

@@ -23,18 +23,24 @@ class Popup{
         buttonField.id = "buttonFieldPopup"
         
         buttonField.appendChild(buttonClose)
+        
+        // FAIRE UN SWITCH CASE C'EST MIEUX
+        
         if(this.type == "delete"){
-            let buttonFail =  document.createElement("button");
-            buttonFail.innerHTML = "Supprimer";
-            buttonFail.addEventListener("click", () => {
+            let buttonDelete =  document.createElement("button");
+            buttonDelete.innerHTML = "Supprimer";
+            buttonDelete.addEventListener("click", () => {
                 document.getElementById("popupDiv").remove();
                 fetch('http://127.0.0.1:8080/delete/' + this.task._id, {
                 method:'delete'})
                 .then( document.getElementById(this.task._id).remove())
                 .catch(err => console.log("erreur : ", err))
             });
-            buttonField.appendChild(buttonFail)
+            buttonField.appendChild(buttonDelete)
         }
+        
+        
+        
         if(this.type == "search"){
             let buttonInfos =  document.createElement("button");
             buttonInfos.innerHTML = "infos";
@@ -81,6 +87,34 @@ class Popup{
             buttonField.appendChild(buttonInfos)
         }
         
+        if(this.type == "done"){
+            let buttonDone =  document.createElement("button");
+            buttonDone.innerHTML = "Valider";
+            buttonDone.addEventListener("click", () => {
+                document.getElementById("popupDiv").remove();
+                fetch('http://127.0.0.1:8080/todos/' + this.task._id, {
+                method:'put',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body:JSON.stringify({"done": true})})
+                .then( data => {document.getElementById(this.task._id).remove(); return (data.json())})
+                .then( data => {
+                    let doneTask = new Task(data.name,data.date, data.description, data.priority, data.done);
+                    doneTask.setID(this.task._id)
+                    console.log(doneTask)
+                    return doneTask
+                })
+                .then( doneTask => {
+                    console.log(doneTask)
+                    doneTask.createFront(doneTask.id)
+                } )
+                .catch(err => console.log("erreur : ", err))
+            });
+            buttonField.appendChild(buttonDone)
+        }
+        
         littleDiv.appendChild(buttonField);
         bigDiv.appendChild(littleDiv);
         
@@ -95,6 +129,8 @@ class Popup{
             return this.infosSearch();
             case "errorSearch":
             return this.infosErrorSearch();
+            case "done":
+            return this.taskDone();
             default:
             return "non tant pis..."
         }      
@@ -129,10 +165,17 @@ class Popup{
         return errorSearchPopup;
     }
     
+    taskDone(){
+        let donePopup = document.createElement('div');
+        donePopup.innerHTML = "Cette tache est completee ?";
+        donePopup.id = "contentPopup";
+        return donePopup;
+    }
+    
     // closePopup(){
     //     document.getElementById("popupDiv").remove();
     // }
-
+    
     
     // wait(){
     //     function setup(){
